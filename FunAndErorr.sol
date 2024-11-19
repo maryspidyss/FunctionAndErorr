@@ -1,40 +1,36 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.0;
 
-contract Calculator {
-    uint256 public value;
+contract ErrorExample {
+    uint256 public count;
+    address public owner;
 
-    function setValue(uint256 newValue) public {
-        require(newValue > 0, "Value must be greater than 0");
-        value = newValue;
+    constructor() {
+        owner = msg.sender; // Set the deployer as the owner
     }
 
-    function checkValue() public view {
-        assert(value < 100);
+    // Increment the counter
+    function increment(uint256 value) public {
+        require(value > 0, "Value must be positive"); // Ensure input is valid
+        count += value;
+
+        // Assert that the count remains non-negative (safe-guard logic)
+        assert(count >= value);
     }
 
-    function resetValue() public {
-        if (value == 0) {
-            revert("Value is already 0");
+    // Decrement the counter (only by the owner)
+    function decrement(uint256 value) public {
+        if (msg.sender != owner) {
+            revert("Only the owner can decrement");
         }
-        value = 0;
+
+        require(value <= count, "Cannot decrement below zero"); // Ensure no underflow
+        count -= value;
     }
 
-    function increment() public {
-        require(value < 10, "Value must be less than 10 to increment");
-        value += 1;
-    }
-
-    function doubleValue() public {
-        uint256 newValue = value * 2;
-        if (newValue > 200) {
-            revert("Doubling the value would exceed the limit of 200");
-        }
-        value = newValue;
-    }
-
-    function halveValue() public {
-        require(value > 1, "Value must be greater than 1 to halve");
-        value /= 2;
+    // Reset the counter
+    function reset() public {
+        require(msg.sender == owner, "Only the owner can reset");
+        count = 0;
     }
 }

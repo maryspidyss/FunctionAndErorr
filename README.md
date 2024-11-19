@@ -1,86 +1,49 @@
-# Calculator Smart Contract
+# ErrorExample Smart Contract
 
-The `Calculator` smart contract is a simple contract that enables basic operations on a stored `value`. Users can set, reset, increment, double, or halve the value, with checks to ensure it stays within specified boundaries.
+This Solidity contract demonstrates the usage of require(), assert(), and revert() for error handling in smart contracts. It features basic operations to manage a counter, with functionality to increment, decrement, and reset the counter. The contract includes checks for valid inputs and authorization, making use of common Solidity error-handling mechanisms.
 
-## Overview
+## Features
 
-- **Contract Name**: `Calculator`
-- **Compiler Version**: `^0.8.20`
-- **License**: MIT
+- *Increment Counter*: Increases the count by a specified value.
+- *Decrement Counter*: Decreases the count, but only if the caller is the owner.
+- *Reset Counter*: Resets the count to zero, but only the owner can execute this.
 
-## Functions
+## Smart Contract Functions
 
-### `setValue(uint256 newValue)`
 
-Sets the `value` to a specified `newValue`.
+### increment(uint256 value)
+- *Description*: Increments the count by the given value.
+- *Error Handling*:
+  - Uses require() to check that the value is greater than zero.
+  - Uses assert() to confirm that the count remains valid after the increment.
 
-- **Parameters**:
-  - `newValue`: A positive integer greater than 0.
-- **Requirements**:
-  - `newValue` must be greater than 0.
-- **Reverts**:
-  - If `newValue` is 0 or lower.
+### decrement(uint256 value)
+- *Description*: Decrements the count by the given value.
+- *Error Handling*:
+  - Uses revert() to prevent non-owners from performing this action.
+  - Uses require() to ensure the decrement does not cause an underflow.
 
-### `checkValue()`
+### reset()
+- *Description*: Resets the count to zero.
+- *Error Handling*:
+  - Uses require() to restrict this function to the owner only.
 
-Verifies that `value` is less than 100.
+## Error Handling Mechanisms
 
-- **Assertions**:
-  - Throws an error if `value` is 100 or more, ensuring it remains under a certain limit.
+- *require()*: Used to validate inputs and ensure preconditions are met.
+- *assert()*: Used to check for invariants, ensuring the contract's internal state is correct.
+- *revert()*: Used for more complex error conditions, like unauthorized access.
 
-### `resetValue()`
+## Prerequisites
 
-Resets the `value` to 0.
+- Solidity compiler version ^0.8.0
+- Ethereum development tools (Remix, Truffle, or Hardhat)
 
-- **Reverts**:
-  - If `value` is already 0, preventing redundant resets.
+## Deployment Instructions
 
-### `increment()`
-
-Increases `value` by 1.
-
-- **Requirements**:
-  - The current `value` must be less than 10.
-- **Reverts**:
-  - If `value` is 10 or greater, ensuring it doesn’t exceed the increment limit.
-
-### `doubleValue()`
-
-Doubles the current `value`.
-
-- **Reverts**:
-  - If doubling `value` would exceed 200, preventing overflow.
-
-### `halveValue()`
-
-Divides `value` by 2.
-
-- **Requirements**:
-  - `value` must be greater than 1.
-- **Reverts**:
-  - If `value` is 1 or lower, to prevent reaching zero or undefined values.
-
-## Usage
-
-1. **Set a Value**:
-   - Call `setValue(newValue)` to assign a new value, where `newValue` is a positive integer.
-2. **Check Value Limit**:
-   - Call `checkValue()` to ensure `value` is under 100.
-3. **Increment**:
-   - Call `increment()` to add 1 to `value` (only if `value` is under 10).
-4. **Double the Value**:
-   - Call `doubleValue()` to multiply `value` by 2 (only if the new value will not exceed 200).
-5. **Halve the Value**:
-   - Call `halveValue()` to divide `value` by 2 (only if `value` is above 1).
-6. **Reset Value**:
-   - Call `resetValue()` to set `value` back to 0.
-
-## Error Handling
-
-The contract uses Solidity’s `require`, `assert`, and `revert` statements for error handling:
-- **`require`**: Used to validate conditions for state changes.
-- **`assert`**: Ensures `value` remains within safe limits.
-- **`revert`**: Used to stop execution if conditions aren't met, as seen in `resetValue` and `doubleValue`.
+1. *Compile*: Use Remix IDE or your chosen tool to compile the contract.
+2. *Deploy*: Deploy the compiled contract to a local test network or any Ethereum-compatible network (such as Rinkeby, Goerli).
+3. *Interaction*: Call the contract functions to increment, decrement, and reset the counter. Ensure to interact with the functions only as the owner (for restricted actions).
 
 ## License
 
